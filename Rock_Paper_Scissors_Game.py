@@ -2,13 +2,13 @@ from tkinter import *
 import random
 from PIL import Image, ImageTk
 
-# ------------------- Window Setup -------------------
+# ------------------- Window of the game-------------------
 root = Tk()
 root.title("Rock Paper Scissors")
 root.geometry("700x600")
-root.configure(bg="#295054")  # Fixed background
+root.configure(bg="#295054")
 
-# ------------------- Title -------------------
+# ------------------- Title of the game -------------------
 title_label = Label(
     root,
     text="🎮 Rock Paper Scissors 🎮",
@@ -18,11 +18,11 @@ title_label = Label(
 )
 title_label.pack(pady=15)
 
-# ------------------- Image -------------------
+# -------------------Insert Image of the game-------------------
 try:
     image = Image.open(
         "C:/Users/user/Documents/Rock Paper Scissors Game/jeux.png")
-    image = image.resize((400, 300))  # Resize for window
+    image = image.resize((400, 300))
     photo = ImageTk.PhotoImage(image)
     label_image = Label(root, image=photo, bg="#295054")
     label_image.pack(pady=20)
@@ -31,7 +31,8 @@ except:
         root, text="[Image Not Found]", font="Arial 16", bg="#295054", fg="white")
     label_image.pack(pady=20)
 
-# ------------------- Prompt -------------------
+# ------------------- choose the move-------------------
+
 prompt_label = Label(
     root,
     text="Choose Your Move:",
@@ -41,11 +42,12 @@ prompt_label = Label(
 )
 prompt_label.pack(pady=10)
 
-# ------------------- Game Logic -------------------
+# ------------------- Create Option and emoji to choose between "Rock", "Paper", "Scissors"-------------------
+
 options = ["Rock", "Paper", "Scissors"]
 emoji_dict = {"Rock": "🪨", "Paper": "📄", "Scissors": "✂️"}
 
-# Variable for result
+
 Result = StringVar()
 Result.set("")
 
@@ -60,22 +62,22 @@ def play(user_choice=None):
     if user_choice == comp_pick:
         Result.set(
             f"🤝 Tie! {emoji_dict[user_choice]} vs {emoji_dict[comp_pick]}")
-        result_entry.config(fg="#FF9800")  # Orange
+        result_entry.config(fg="#FF9800")
     elif (user_choice == "Rock" and comp_pick == "Scissors") or \
          (user_choice == "Paper" and comp_pick == "Rock") or \
          (user_choice == "Scissors" and comp_pick == "Paper"):
         Result.set(
             f"🎉 You Win! {emoji_dict[user_choice]} beats {emoji_dict[comp_pick]}")
-        result_entry.config(fg="#4CAF50")  # Green
+        result_entry.config(fg="#4CAF50")
     else:
         Result.set(
             f"💻 Computer Wins! {emoji_dict[comp_pick]} beats {emoji_dict[user_choice]}")
-        result_entry.config(fg="#F44336")  # Red
+        result_entry.config(fg="#F44336")
 
 
 def Reset():
     Result.set("")
-    result_entry.config(fg="#000")  # Default black
+    result_entry.config(fg="#000")
 
 
 def Exit():
@@ -83,6 +85,7 @@ def Exit():
 
 
 # ------------------- Choice Buttons -------------------
+
 button_frame = Frame(root, bg="#295054")
 button_frame.pack(pady=20)
 
@@ -104,12 +107,12 @@ scissors_button = create_choice_button(
     button_frame, "    Scissors ✂️", "#8BC34A", "#fff", lambda: play("Scissors"))
 scissors_button.grid(row=0, column=2, padx=15)
 
-# ------------------- Result Entry -------------------
 result_entry = Entry(root, textvariable=Result, font="Tahoma 20 bold", justify="center",
                      width=40, bd=3, relief=RIDGE, fg="#000")
 result_entry.pack(pady=20)
 
-# ------------------- Control Buttons -------------------
+# ------------------- Create Frame for Buttons -------------------
+
 control_frame = Frame(root, bg="#295054")
 control_frame.pack(pady=20)
 
@@ -125,5 +128,5 @@ exit_button = Button(control_frame, text="EXIT", font="Tahoma 18 bold", bg="#f44
                      command=Exit)
 exit_button.grid(row=0, column=2, padx=10)
 
-# ------------------- Run Application -------------------
+
 root.mainloop()
