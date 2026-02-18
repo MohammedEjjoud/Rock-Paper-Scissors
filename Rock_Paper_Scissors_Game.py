@@ -1,128 +1,129 @@
-# ------------Import the necessary libraries-----:
 from tkinter import *
 import random
 from PIL import Image, ImageTk
 
-# ------------------- Window -------------------
-window = Tk()
-window.title("Rock Paper Scissors")
-window.geometry("800x650")
-window.configure(bg="#295054")
+# ------------------- Window Setup -------------------
+root = Tk()
+root.title("Rock Paper Scissors")
+root.geometry("700x600")
+root.configure(bg="#295054")  # Fixed background
 
 # ------------------- Title -------------------
 title_label = Label(
-    window,
+    root,
     text="🎮 Rock Paper Scissors 🎮",
     font="Arial 24 bold",
     bg="#295054",
-    fg="white"
+    fg="#fff"
 )
-title_label.pack(pady=10)
+title_label.pack(pady=15)
 
-# ------------------- Image-------------------
+# ------------------- Image -------------------
 try:
     image = Image.open(
         "C:/Users/user/Documents/Rock Paper Scissors Game/jeux.png")
+    image = image.resize((400, 300))  # Resize for window
     photo = ImageTk.PhotoImage(image)
-    label_image = Label(window, image=photo, bg="#f0f0f0")
-    label_image.pack(pady=10)
+    label_image = Label(root, image=photo, bg="#295054")
+    label_image.pack(pady=20)
 except:
     label_image = Label(
-        window, text="[Image Not Found]", font="Arial 16", bg="#f0f0f0")
-    label_image.pack(pady=10)
+        root, text="[Image Not Found]", font="Arial 16", bg="#295054", fg="white")
+    label_image.pack(pady=20)
 
-# ------------------- Choose User -------------------
-Choose_user = Label(
-    window,
+# ------------------- Prompt -------------------
+prompt_label = Label(
+    root,
     text="Choose Your Move:",
     bg="#295054",
     font="Tahoma 20 bold",
-    fg="white"
+    fg="#fff"
 )
-Choose_user.pack(pady=10)
+prompt_label.pack(pady=10)
 
-# ------------------- Result Labels -------------------
-computer_label = Label(window, text="", font="Tahoma 20", bg="#295054")
-computer_label.pack(pady=10)
-
-result_label = Label(window, text="", font="Tahoma 24 bold", bg="#295054")
-result_label.pack(pady=10)
-
-# ------------------- Les Options -------------------
+# ------------------- Game Logic -------------------
 options = ["Rock", "Paper", "Scissors"]
 emoji_dict = {"Rock": "🪨", "Paper": "📄", "Scissors": "✂️"}
 
+# Variable for result
+Result = StringVar()
+Result.set("")
 
-def play(user_choice):
+
+def play(user_choice=None):
+    if not user_choice:
+        Result.set("Please choose : Rock, Paper, or Scissors!")
+        return
+
     comp_pick = random.choice(options)
 
-    computer_label.config(
-        text=f"Computer chose: {comp_pick} {emoji_dict[comp_pick]}", fg="white")
-
-    # ----------------Determine winner---------------
     if user_choice == comp_pick:
-        result_label.config(text=f"🤝 It's a Tie!", fg="#FF9800")
+        Result.set(
+            f"🤝 Tie! {emoji_dict[user_choice]} vs {emoji_dict[comp_pick]}")
+        result_entry.config(fg="#FF9800")  # Orange
     elif (user_choice == "Rock" and comp_pick == "Scissors") or \
          (user_choice == "Paper" and comp_pick == "Rock") or \
          (user_choice == "Scissors" and comp_pick == "Paper"):
-        result_label.config(
-            text=f"🎉 You Win! {emoji_dict[user_choice]} beats {emoji_dict[comp_pick]}", fg="#4CAF50")
+        Result.set(
+            f"🎉 You Win! {emoji_dict[user_choice]} beats {emoji_dict[comp_pick]}")
+        result_entry.config(fg="#4CAF50")  # Green
     else:
-        result_label.config(
-            text=f"💻 Computer Wins! {emoji_dict[comp_pick]} beats {emoji_dict[user_choice]}", fg="#F44336")
+        Result.set(
+            f"💻 Computer Wins! {emoji_dict[comp_pick]} beats {emoji_dict[user_choice]}")
+        result_entry.config(fg="#F44336")  # Red
 
 
 def Reset():
-    computer_label.config(text="")
-    result_label.config(text="")
-    result_label.config(fg="#000")
+    Result.set("")
+    result_entry.config(fg="#000")  # Default black
 
 
 def Exit():
-    window.destroy()
+    root.destroy()
 
 
 # ------------------- Choice Buttons -------------------
-button_frame = Frame(window, bg="#295054")
+button_frame = Frame(root, bg="#295054")
 button_frame.pack(pady=20)
 
 
-def create_button(parent, text, bg_color, fg_color, cmd):
-    return Button(
-        parent,
-        text=text,
-        font="Tahoma 18 bold",
-        bg=bg_color,
-        fg=fg_color,
-        width=10,
-        bd=0,
-        relief=RIDGE,
-        activebackground=bg_color,
-        command=cmd
-    )
+def create_choice_button(parent, text, bg_color, fg_color, cmd):
+    return Button(parent, text=text, font="Tahoma 18 bold", bg=bg_color, fg=fg_color,
+                  width=10, bd=0, relief=RIDGE, command=cmd)
 
 
-rock_button = create_button(button_frame, " Rock 🪨",
-                            "#FFC107", "#000", lambda: play("Rock"))
+rock_button = create_choice_button(
+    button_frame, "Rock 🪨", "#FFC107", "#000", lambda: play("Rock"))
 rock_button.grid(row=0, column=0, padx=15)
 
-paper_button = create_button(
+paper_button = create_choice_button(
     button_frame, "Paper 📄", "#03A9F4", "#fff", lambda: play("Paper"))
 paper_button.grid(row=0, column=1, padx=15)
 
-scissors_button = create_button(
-    button_frame, "   Scissors✂️ ", "#8BC34A", "#fff", lambda: play("Scissors"))
+scissors_button = create_choice_button(
+    button_frame, "    Scissors ✂️", "#8BC34A", "#fff", lambda: play("Scissors"))
 scissors_button.grid(row=0, column=2, padx=15)
 
+# ------------------- Result Entry -------------------
+result_entry = Entry(root, textvariable=Result, font="Tahoma 20 bold", justify="center",
+                     width=40, bd=3, relief=RIDGE, fg="#000")
+result_entry.pack(pady=20)
+
 # ------------------- Control Buttons -------------------
-control_frame = Frame(window, bg="#295054")
-control_frame.pack(pady=5)
+control_frame = Frame(root, bg="#295054")
+control_frame.pack(pady=20)
 
-reset_button = create_button(control_frame, "Reset", "#2196F3", "white", Reset)
-reset_button.grid(row=0, column=0, padx=10)
+play_button = Button(control_frame, text="PLAY", font="Tahoma 18 bold", bg="#4CAF50", fg="white", width=12,
+                     command=lambda: play())
+play_button.grid(row=0, column=0, padx=10)
 
-exit_button = create_button(control_frame, "Exit", "#f44336", "white", Exit)
-exit_button.grid(row=0, column=1, padx=10)
+reset_button = Button(control_frame, text="RESET", font="Tahoma 18 bold", bg="#2196F3", fg="white", width=12,
+                      command=Reset)
+reset_button.grid(row=0, column=1, padx=10)
 
+exit_button = Button(control_frame, text="EXIT", font="Tahoma 18 bold", bg="#f44336", fg="white", width=12,
+                     command=Exit)
+exit_button.grid(row=0, column=2, padx=10)
 
-window.mainloop()
+# ------------------- Run Application -------------------
+root.mainloop()
